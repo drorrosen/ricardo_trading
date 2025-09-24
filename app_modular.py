@@ -1321,16 +1321,7 @@ def main():
         </div>
     """, unsafe_allow_html=True)
     
-    # Real Data Mode Notice
-    st.info(f"""
-    🚀 **REAL DATA Mode**: Live cryptocurrency data from CoinGecko API:
-    • 🌐 **Primary Source**: CoinGecko API (free, reliable, up to 1 year of hourly data)
-    • 📊 **Fallback**: Your Excel file for ETH/BCH (if CoinGecko fails)
-    • 🛡️ **Heroku-friendly**: No Binance API blocking issues!
-    • ⚡ **Real-time**: Fresh data every time you analyze
-    
-    📋 **Available Assets**: {', '.join(AVAILABLE_ASSETS)}
-    """)
+   
     
     # Show asset status
     col1, col2 = st.columns(2)
