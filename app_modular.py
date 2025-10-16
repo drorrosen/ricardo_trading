@@ -44,8 +44,8 @@ class EnhancedDataLoader:
             'BCH': 'bitcoin-cash'
         }
     
-    def load_real_data(self, strong_asset: str, weak_asset: str, days: int = 365):
-        """Load REAL data from Excel file - NO MORE SAMPLE DATA!"""
+    def load_real_data(self, strong_asset: str, weak_asset: str, days: int = 180):
+        """Load REAL data - defaults to 180 days (6 months) to stay within CoinGecko free tier limits"""
         
         # Validate that we have these assets
         if strong_asset not in AVAILABLE_ASSETS:
@@ -53,6 +53,11 @@ class EnhancedDataLoader:
         
         if weak_asset not in AVAILABLE_ASSETS:
             raise ValueError(f"❌ Weak asset '{weak_asset}' is not in our available assets: {AVAILABLE_ASSETS}")
+        
+        # Ensure we don't exceed CoinGecko free tier limit (365 days)
+        if days > 365:
+            print(f"⚠️ Requested {days} days exceeds CoinGecko free limit. Using 365 days instead.")
+            days = 365
         
         # First, try CoinGecko API for all pairs (more reliable)
         print(f"🌐 Loading data from CoinGecko API for {strong_asset}/{weak_asset} ({days} days)")
@@ -291,14 +296,14 @@ from styles_modern import (
 AVAILABLE_ASSETS = ['ETH', 'BTC', 'BNB', 'ADA', 'ALGO', 'APE', 'APT', 'ARB', 'ATOM', 'AVAX', 'BCH']
 STRONG_ASSETS = ['ETH', 'BTC', 'BNB']  # Assets that can be used as collateral
 
-# Simple settings
+# Simple settings - CoinGecko Free Tier Compatible
 DEFAULT_SETTINGS = {
     'cointegration_window': 30,
     'correlation_window': 30,
     'beta_window': 30,
-    'data_points': 500,
-    'min_data_points': 50,
-    'max_data_points': 2000  # Allow up to 2000 data points for extensive analysis
+    'data_points': 180,      # Default to 6 months (safe for free tier)
+    'min_data_points': 30,   # Minimum 30 days
+    'max_data_points': 365   # Max 365 days (CoinGecko free tier limit)
 }
 
 TIMEFRAMES = {
@@ -1212,15 +1217,17 @@ def render_sidebar_navigation():
                     <span class="dashboard-info-value">{st.session_state.current_page}</span>
                 </div>
                 <div class="dashboard-info-item">
-                    <strong>User Role:</strong><br/>
-                    <span class="dashboard-info-value">Admin</span>
+                    <strong>Available Coins:</strong><br/>
+                    <span class="dashboard-info-value">{len(AVAILABLE_ASSETS)}</span>
                 </div>
                 <div class="dashboard-info-item">
-                    <strong>Last Updated:</strong><br/>
-                    <span class="dashboard-info-value">{datetime.now().strftime("%H:%M:%S")}</span>
+                    <strong>API Limit:</strong><br/>
+                    <span class="dashboard-info-value">Max 365 days</span>
                 </div>
             </div>
         """, unsafe_allow_html=True)
+        
+        st.warning("ℹ️ CoinGecko free tier: Max 365 days of data per request")
     
     # Return settings from session state
     return st.session_state.sidebar_settings
@@ -1636,32 +1643,32 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
         )
     
     with col4:
-        # Use sidebar data points setting but allow override
+        # Simplified - just days input with CoinGecko limit
         data_points_override = st.number_input(
-            "Data Points (Bars)",
-            min_value=DEFAULT_SETTINGS['min_data_points'],
-            max_value=DEFAULT_SETTINGS['max_data_points'],
-            value=sidebar_settings['data_points'],
-            step=10,
-            help="Number of bars to analyze. 180=~6 months daily, 360=~1 year, 720=~2 years. Smaller steps for fine control."
+            "Days of History",
+            min_value=30,
+            max_value=365,
+            value=180,
+            step=30,
+            help="⚠️ CoinGecko free tier max: 365 days. Recommended: 180 days (6 months)"
         )
     
     # Quick preset buttons for common data ranges
-    st.markdown('<p style="font-size: 0.9rem; color: #64748B; margin: 0.5rem 0 0.25rem 0;">Quick Presets:</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 0.9rem; color: #64748B; margin: 0.5rem 0 0.25rem 0;">📅 Quick Presets:</p>', unsafe_allow_html=True)
     preset_col1, preset_col2, preset_col3, preset_col4 = st.columns(4)
     
     with preset_col1:
-        if st.button("180 (6mo)", key="preset_180", use_container_width=True):
-            data_points_override = 180
+        if st.button("30 days", key="preset_30", use_container_width=True):
+            data_points_override = 30
     with preset_col2:
-        if st.button("360 (1yr)", key="preset_360", use_container_width=True):
-            data_points_override = 360
+        if st.button("90 days", key="preset_90", use_container_width=True):
+            data_points_override = 90
     with preset_col3:
-        if st.button("720 (2yr)", key="preset_720", use_container_width=True):
-            data_points_override = 720
+        if st.button("180 days", key="preset_180", use_container_width=True):
+            data_points_override = 180
     with preset_col4:
-        if st.button("1000", key="preset_1000", use_container_width=True):
-            data_points_override = 1000
+        if st.button("365 days (Max)", key="preset_365", use_container_width=True):
+            data_points_override = 365
     
     st.markdown("<br>", unsafe_allow_html=True)
     
