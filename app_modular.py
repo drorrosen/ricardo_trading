@@ -485,21 +485,50 @@ st.set_page_config(
 # --- Apply Modern Dark Trading Theme ---
 st.markdown(get_modern_css(), unsafe_allow_html=True)
 
-# --- Add Sidebar Navigation CSS ---
+# --- Add Professional Dark Sidebar CSS ---
 st.markdown("""
 <style>
-    /* Enhanced Sidebar Navigation */
-    [data-testid="stSidebar"] {
-        background: #F8FAFC !important;
+    /* DARK SIDEBAR - Professional Theme */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #1D2125 0%, #2C3539 100%) !important;
+        backdrop-filter: blur(24px) saturate(150%) !important;
+        border-right: 1px solid #2C3539 !important;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    /* Ensure all sidebar text is WHITE */
+    section[data-testid="stSidebar"] *,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span,
+    section[data-testid="stSidebar"] div,
+    section[data-testid="stSidebar"] label {
+        color: #FFFFFF !important;
+    }
+    
+    /* Add subtle gradient overlay for depth */
+    section[data-testid="stSidebar"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 50% 0%, 
+            rgba(76, 154, 255, 0.08) 0%, 
+            transparent 50%);
+        pointer-events: none;
+        z-index: 0;
     }
     
     .sidebar-logo {
-        background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+        background: linear-gradient(135deg, #0052CC 0%, #4C9AFF 100%);
         padding: 1.5rem;
         border-radius: 16px;
         text-align: center;
         margin-bottom: 1.5rem;
-        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+        box-shadow: 0 8px 24px rgba(76, 154, 255, 0.3);
+        position: relative;
+        z-index: 1;
     }
     
     .sidebar-logo h1 {
@@ -509,55 +538,114 @@ st.markdown("""
         font-weight: 700 !important;
     }
     
+    .sidebar-logo p {
+        color: rgba(255, 255, 255, 0.9) !important;
+        margin: 0.5rem 0 0 0 !important;
+        font-size: 0.75rem !important;
+    }
+    
     .nav-section-title {
-        color: #1E293B;
-        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
-        padding: 0.5rem 1rem;
-        margin: 1rem 0 0.5rem 0;
+        letter-spacing: 0.08em;
+        padding: 0.75rem 0 0 0.25rem;
+        margin: 1rem 0 0.75rem 0;
     }
     
     .dashboard-info {
-        background: rgba(139, 92, 246, 0.05);
-        border: 1px solid rgba(139, 92, 246, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 1rem;
         margin-top: 2rem;
     }
     
     .dashboard-info-item {
-        color: #475569;
+        color: rgba(255, 255, 255, 0.7);
         font-size: 0.8rem;
         margin-bottom: 0.5rem;
     }
     
     .dashboard-info-value {
-        color: #1E293B;
+        color: #FFFFFF !important;
         font-weight: 600;
     }
     
-    /* Page buttons styling */
+    /* Navigation buttons - Dark theme */
     [data-testid="stSidebar"] .stButton > button {
         width: 100%;
-        background: white !important;
-        color: #1E293B !important;
-        border: 1px solid #E2E8F0 !important;
-        border-radius: 10px !important;
-        padding: 0.875rem 1rem !important;
+        background: #1D2125 !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 0.625rem !important;
+        padding: 1rem 1.25rem !important;
         margin-bottom: 0.5rem !important;
         font-weight: 500 !important;
         text-align: left !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        min-height: 56px !important;
     }
     
     [data-testid="stSidebar"] .stButton > button:hover {
-        background: #F1F5F9 !important;
-        border-color: #8B5CF6 !important;
+        background: #2C3539 !important;
+        border-color: rgba(76, 154, 255, 0.3) !important;
+        transform: translateX(3px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Radio buttons in sidebar - Dark theme with blue accent */
+    [data-testid="stSidebar"] .stRadio label {
+        background: #1D2125 !important;
+        backdrop-filter: blur(8px) !important;
+        border-radius: 0.625rem !important;
+        padding: 1rem 1.25rem !important;
+        color: #FFFFFF !important;
+        font-weight: 500 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        min-height: 56px !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    [data-testid="stSidebar"] .stRadio label:hover {
+        background: #2C3539 !important;
+        border-color: rgba(76, 154, 255, 0.3) !important;
+        color: white !important;
+        transform: translateX(3px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Selected radio button - Blue glow effect */
+    [data-testid="stSidebar"] .stRadio label[data-checked="true"] {
+        background: #1D2125 !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        border: 2px solid #4C9AFF !important;
+        box-shadow: 
+            0 6px 16px rgba(76, 154, 255, 0.4),
+            0 2px 8px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(76, 154, 255, 0.3) !important;
         transform: translateX(4px) !important;
-        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2) !important;
+    }
+    
+    /* Sidebar alerts/info boxes - Glass effect on dark */
+    [data-testid="stSidebar"] .stAlert,
+    [data-testid="stSidebar"] .stInfo,
+    [data-testid="stSidebar"] .stWarning {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        color: #FFFFFF !important;
+    }
+    
+    [data-testid="stSidebar"] .stAlert *,
+    [data-testid="stSidebar"] .stInfo *,
+    [data-testid="stSidebar"] .stWarning * {
+        color: #FFFFFF !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -794,27 +882,36 @@ def create_indexed_performance_chart(df: pd.DataFrame, strong_asset: str, weak_a
         title=dict(
             text=f"📈 Indexed Performance | Relative: {relative_perf:+.1f}%",
             x=0.5,
-            font=dict(size=16, color='#1e40af', family='Inter')
+            font=dict(size=18, color='#1e293b', family='Urbanist', weight=700)
         ),
         xaxis_title="Date",
         yaxis_title="Indexed Value (Base = 100)",
-        height=400,
+        height=450,
         hovermode='x unified',
-        plot_bgcolor='white',
+        plot_bgcolor='rgba(248, 250, 252, 0.5)',
         paper_bgcolor='white',
-        font=dict(color='#374151', family='Inter'),
+        font=dict(color='#1e293b', family='Urbanist', size=12),
         legend=dict(
             orientation='h',
             yanchor='bottom',
             y=1.02,
             xanchor='center',
-            x=0.5
+            x=0.5,
+            bgcolor='rgba(255, 255, 255, 0.9)',
+            bordercolor='rgba(0, 82, 204, 0.2)',
+            borderwidth=1,
+            font=dict(size=12, color='#1e293b')
         ),
         yaxis=dict(
-            gridcolor='rgba(156, 163, 175, 0.2)',
-            zerolinecolor='rgba(156, 163, 175, 0.3)'
+            gridcolor='rgba(0, 82, 204, 0.08)',
+            zerolinecolor='rgba(0, 82, 204, 0.15)',
+            title_font=dict(size=13, color='#64748b')
         ),
-        xaxis=dict(gridcolor='rgba(156, 163, 175, 0.1)')
+        xaxis=dict(
+            gridcolor='rgba(0, 82, 204, 0.06)',
+            title_font=dict(size=13, color='#64748b')
+        ),
+        margin=dict(t=80, b=60, l=60, r=40)
     )
     
     return fig
@@ -920,24 +1017,35 @@ def create_point_spread_chart(df: pd.DataFrame, show_mad_bands: bool = True,
         title=dict(
             text="📊 Point Spread (PS) with Statistical Bands",
             x=0.5,
-            font=dict(size=16, color='#1e40af', family='Inter')
+            font=dict(size=18, color='#1e293b', family='Urbanist', weight=700)
         ),
         xaxis_title="Date",
         yaxis_title="Point Spread (Weak - Strong Returns)",
-        height=400,
+        height=450,
         hovermode='x unified',
-        plot_bgcolor='white',
+        plot_bgcolor='rgba(248, 250, 252, 0.5)',
         paper_bgcolor='white',
-        font=dict(color='#374151', family='Inter'),
+        font=dict(color='#1e293b', family='Urbanist', size=12),
         legend=dict(
             orientation='h',
             yanchor='bottom',
             y=-0.2,
             xanchor='center',
-            x=0.5
+            x=0.5,
+            bgcolor='rgba(255, 255, 255, 0.9)',
+            bordercolor='rgba(0, 82, 204, 0.2)',
+            borderwidth=1,
+            font=dict(size=11, color='#1e293b')
         ),
-        xaxis=dict(gridcolor='rgba(156, 163, 175, 0.1)'),
-        yaxis=dict(gridcolor='rgba(156, 163, 175, 0.2)')
+        xaxis=dict(
+            gridcolor='rgba(0, 82, 204, 0.06)',
+            title_font=dict(size=13, color='#64748b')
+        ),
+        yaxis=dict(
+            gridcolor='rgba(0, 82, 204, 0.08)',
+            title_font=dict(size=13, color='#64748b')
+        ),
+        margin=dict(t=80, b=80, l=60, r=40)
     )
     
     return fig
@@ -1040,15 +1148,15 @@ def create_accumulated_spread_chart(df: pd.DataFrame, show_mad_bands: bool = Tru
         title=dict(
             text="📈 Accumulated Spread (AS) with Entry Zones",
             x=0.5,
-            font=dict(size=16, color='#1e40af', family='Inter')
+            font=dict(size=18, color='#1e293b', family='Urbanist', weight=700)
         ),
         xaxis_title="Date",
         yaxis_title="Accumulated Spread (Cumulative Weak - Strong)",
-        height=400,
+        height=450,
         hovermode='x unified',
-        plot_bgcolor='white',
+        plot_bgcolor='rgba(248, 250, 252, 0.5)',
         paper_bgcolor='white',
-        font=dict(color='#374151', family='Inter'),
+        font=dict(color='#1e293b', family='Urbanist', size=12),
         legend=dict(
             orientation='h',
             yanchor='bottom',
@@ -1082,13 +1190,26 @@ def create_correlation_beta_charts(df: pd.DataFrame) -> Tuple[go.Figure, go.Figu
                           annotation_text='Strong Correlation (0.7)')
         
         fig_corr.update_layout(
-            title="🔗 Rolling Correlation (30-period)",
+            title=dict(
+                text="🔗 Rolling Correlation (30-period)",
+                x=0.5,
+                font=dict(size=18, color='#1e293b', family='Urbanist', weight=700)
+            ),
             xaxis_title="Date",
             yaxis_title="Correlation Coefficient",
-            height=300,
-            plot_bgcolor='white',
-            paper_bgcolor='white',
-            font=dict(color='#374151', family='Inter', size=12)
+            height=450,
+            plot_bgcolor='rgba(248, 250, 252, 0.5)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#1e293b', family='Urbanist', size=12),
+            xaxis=dict(
+                gridcolor='rgba(0, 82, 204, 0.06)',
+                title_font=dict(size=13, color='#64748b')
+            ),
+            yaxis=dict(
+                gridcolor='rgba(0, 82, 204, 0.08)',
+                title_font=dict(size=13, color='#64748b')
+            ),
+            margin=dict(t=80, b=60, l=60, r=40)
         )
     
     # Beta chart
@@ -1110,13 +1231,26 @@ def create_correlation_beta_charts(df: pd.DataFrame) -> Tuple[go.Figure, go.Figu
         fig_beta.add_hline(y=2.0, line=dict(color='#22c55e', width=1, dash='dash'))
         
         fig_beta.update_layout(
-            title="📊 Rolling Beta (Volatility Ratio)",
+            title=dict(
+                text="📊 Rolling Beta (Volatility Ratio)",
+                x=0.5,
+                font=dict(size=18, color='#1e293b', family='Urbanist', weight=700)
+            ),
             xaxis_title="Date",
             yaxis_title="Beta",
-            height=300,
-            plot_bgcolor='white',
-            paper_bgcolor='white',
-            font=dict(color='#374151', family='Inter', size=12)
+            height=450,
+            plot_bgcolor='rgba(248, 250, 252, 0.5)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#1e293b', family='Urbanist', size=12),
+            xaxis=dict(
+                gridcolor='rgba(0, 82, 204, 0.06)',
+                title_font=dict(size=13, color='#64748b')
+            ),
+            yaxis=dict(
+                gridcolor='rgba(0, 82, 204, 0.08)',
+                title_font=dict(size=13, color='#64748b')
+            ),
+            margin=dict(t=80, b=60, l=60, r=40)
         )
     
     return fig_corr, fig_beta
@@ -1435,28 +1569,23 @@ def main():
 def render_selection_filter_page(data_provider, sidebar_settings):
     """Selection Filter Page - Find the best trading pairs"""
     
-    # Modern header
-    st.markdown("""
-            <div style="
-            text-align: center; 
-            padding: 1.5rem 0;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(147, 51, 234, 0.02) 100%);
-                border-radius: 16px;
-                margin-bottom: 2rem;
-            border: 1px solid rgba(139, 92, 246, 0.1);
-        ">
-            <h1 style="
-                color: #8B5CF6; 
-                margin: 0; 
-                font-weight: 700;
-                font-size: 2rem;
-                letter-spacing: -0.5px;
-            ">SELECTION FILTER</h1>
-            <p style="color: #6B7280; font-size: 0.95rem; margin-top: 0.75rem; font-weight: 500;">
-                Analyze all available pairs to find optimal trading opportunities
-            </p>
-            </div>
-        """, unsafe_allow_html=True)
+    # Import styling functions
+    from styles_modern import create_page_header, create_info_section
+    
+    # Professional header with gradient text
+    st.markdown(create_page_header(
+        title="Pair Selection Filter",
+        subtitle="Discover high-quality trading opportunities with advanced statistical analysis",
+        icon="💎"
+    ), unsafe_allow_html=True)
+    
+    # Add helpful info section
+    st.markdown(create_info_section(
+        title="Quick Start Guide",
+        content="Choose your collateral asset, set your quality threshold, and run the analysis. The system will evaluate all available pairs and rank them based on cointegration, correlation, and trading potential.",
+        icon="🚀",
+        color="#0052CC"
+    ), unsafe_allow_html=True)
         
     # Configuration Section - Simplified and cleaner
     st.markdown('<h3 style="color: #1E293B; font-weight: 600; margin-bottom: 1.5rem;">Configuration</h3>', unsafe_allow_html=True)
@@ -1698,29 +1827,24 @@ def render_selection_filter_page(data_provider, sidebar_settings):
 def render_trade_analysis_page(data_provider, sidebar_settings):
     """Trade Analysis Page - Deep analysis of individual trading pairs"""
     
-    # Modern header
-    st.markdown("""
-        <div style="
-            text-align: center; 
-            padding: 1.5rem 0;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(147, 51, 234, 0.02) 100%);
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(139, 92, 246, 0.1);
-        ">
-            <h1 style="
-                color: #8B5CF6; 
-                margin: 0; 
-                font-weight: 700;
-                font-size: 2rem;
-                letter-spacing: -0.5px;
-            ">TRADE ANALYSIS</h1>
-            <p style="color: #6B7280; font-size: 0.95rem; margin-top: 0.75rem; font-weight: 500;">
-                Deep analysis of individual trading pairs with advanced metrics
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
+    # Import styling functions
+    from styles_modern import create_page_header, create_info_section, create_glossy_section_header
+    
+    # Professional header with gradient text
+    st.markdown(create_page_header(
+        title="Trade Analysis",
+        subtitle="Deep analysis of individual trading pairs with advanced metrics",
+        icon="📊"
+    ), unsafe_allow_html=True)
         
+    # Add helpful info banner
+    st.markdown(create_info_section(
+        title="How to Use This Page",
+        content="Select a trading pair below, configure your analysis parameters, and click 'Run Analysis' to see deep statistical insights, entry/exit signals, and performance metrics.",
+        icon="💡",
+        color="#0052CC"
+    ), unsafe_allow_html=True)
+    
     # Add explanation section
     with st.expander("📚 Key Concepts & Parameter Guide", expanded=False):
         st.markdown("""
@@ -1941,43 +2065,70 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
                 ps_pct = df['PS_pct'].iloc[-1] if 'PS_pct' in df.columns else None
                 as_pct = df['AS_pct'].iloc[-1] if 'AS_pct' in df.columns else None
                 
-                # Determine signal
+                # Determine signal and visual styling
                 if current_z < -2.0 and ps_pct and ps_pct < 0.05 and as_pct and as_pct < 0.20:
                     signal = "🟢 STRONG BUY"
                     signal_color = "#10B981"
                     action = "✅ Good entry opportunity!"
+                    signal_variant = 'green'
+                    signal_trend = {'direction': 'up', 'value': 'Strong'}
                 elif current_z > 2.0:
                     signal = "🔴 STRONG SELL"  
                     signal_color = "#EF4444"
                     action = "⚠️ Not recommended for long entry"
+                    signal_variant = 'red'
+                    signal_trend = {'direction': 'down', 'value': 'Avoid'}
                 elif as_pct and as_pct > 0.50:
                     signal = "💰 TAKE PROFIT"
                     signal_color = "#F59E0B"
                     action = "✅ Exit zone - close positions"
+                    signal_variant = 'orange'
+                    signal_trend = {'direction': 'up', 'value': 'Exit'}
                 else:
                     signal = "⏸️ WAIT"
                     signal_color = "#6B7280"
                     action = "⏳ No clear signal yet"
+                    signal_variant = 'purple'
+                    signal_trend = None
+                
+                # Import styling functions
+                from styles_modern import create_ios_glass_stat_card
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Z-Score", f"{current_z:.2f}", "Current position")
+                    st.markdown(create_ios_glass_stat_card(
+                        value=f"{current_z:.2f}",
+                        label="Z-Score",
+                        icon="📊",
+                        variant='blue'
+                    ), unsafe_allow_html=True)
                 with col2:
-                    st.markdown(f"""
-                        <div style="background: {signal_color}20; border: 2px solid {signal_color}; border-radius: 8px; padding: 1rem; text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 700; color: {signal_color};">{signal}</div>
-                        </div>
-                    """, unsafe_allow_html=True)
+                    st.markdown(create_ios_glass_stat_card(
+                        value=signal,
+                        label="Trading Signal",
+                        icon="🎯",
+                        trend=signal_trend,
+                        variant=signal_variant
+                    ), unsafe_allow_html=True)
                 with col3:
                     if ps_pct is not None and as_pct is not None:
-                        st.metric("PS_pct", f"{ps_pct:.1%}", f"AS: {as_pct:.1%}")
+                        st.markdown(create_ios_glass_stat_card(
+                            value=f"{ps_pct:.1%}",
+                            label="Point Spread %",
+                            icon="📈",
+                            variant='blue' if ps_pct < 0.20 else 'purple'
+                        ), unsafe_allow_html=True)
                 
                 st.success(action)
             
             st.markdown("---")
             
-            # Main Performance Chart
-            st.markdown("### 📈 Price Performance")
+            # Main Performance Chart with professional header
+            st.markdown(create_glossy_section_header(
+                icon="📈",
+                title="Price Performance",
+                subtitle="Indexed price movements showing relative strength"
+            ), unsafe_allow_html=True)
             if f'{strong_asset} Close' in df.columns and f'{weak_asset} Close' in df.columns:
                 try:
                     fig_perf = create_indexed_performance_chart(df, strong_asset, weak_asset)
@@ -1997,19 +2148,36 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
                     relative_perf = strong_perf - weak_perf
                     
                     with col1:
-                        st.metric(f"{strong_asset} Performance", f"{strong_perf:+.2f}%", 
-                                    "Strong Asset" if strong_perf > 0 else "Underperforming")
+                        st.markdown(create_ios_glass_stat_card(
+                            value=f"{strong_perf:+.2f}%",
+                            label=f"{strong_asset} Performance",
+                            icon="🔷",
+                            trend={'direction': 'up' if strong_perf > 0 else 'down', 'value': 'Strong Asset' if strong_perf > 0 else "Underperforming"},
+                            variant='blue' if strong_perf > 0 else 'red'
+                        ), unsafe_allow_html=True)
                     with col2:
-                        st.metric(f"{weak_asset} Performance", f"{weak_perf:+.2f}%",
-                                    "Weak Asset" if weak_perf < strong_perf else "Outperforming")
+                        st.markdown(create_ios_glass_stat_card(
+                            value=f"{weak_perf:+.2f}%",
+                            label=f"{weak_asset} Performance",
+                            icon="🔶",
+                            trend={'direction': 'up' if weak_perf > 0 else 'down', 'value': "Weak Asset" if weak_perf < strong_perf else "Outperforming"},
+                            variant='orange'
+                        ), unsafe_allow_html=True)
                     with col3:
-                        st.metric("Relative Performance", f"{relative_perf:+.2f}%",
-                                    "Divergence" if abs(relative_perf) > 10 else "Converging")
+                        st.markdown(create_ios_glass_stat_card(
+                            value=f"{relative_perf:+.2f}%",
+                            label="Relative Performance",
+                            icon="⚖️",
+                            variant='purple' if abs(relative_perf) > 10 else 'green'
+                        ), unsafe_allow_html=True)
                     with col4:
                         entry_favorable = relative_perf < 0  # Weak outperformed, mean reversion expected
-                        st.metric("Entry Favorability", 
-                                    "✅ Favorable" if entry_favorable else "⚠️ Wait",
-                                    "Mean reversion likely" if entry_favorable else "Trend continuing")
+                        st.markdown(create_ios_glass_stat_card(
+                            value="✅ Favorable" if entry_favorable else "⚠️ Wait",
+                            label="Entry Favorability",
+                            icon="🎯",
+                            variant='green' if entry_favorable else 'orange'
+                        ), unsafe_allow_html=True)
                 except Exception as e:
                     st.warning(f"⚠️ Could not calculate performance metrics: {str(e)}")
             
@@ -2203,152 +2371,169 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
                 st.info("Accumulated Spread data not available")
         
         with analysis_tab4:
-            st.subheader("📊 Distribution Analysis")
+            # Professional section header
+            from styles_modern import create_glossy_section_header
+            st.markdown(create_glossy_section_header(
+                icon="📊",
+                title="Distribution Analysis",
+                subtitle="Statistical distribution of trading signals and spread metrics"
+            ), unsafe_allow_html=True)
             
-            col1, col2 = st.columns(2)
+            # Add spacing after header
+            st.markdown("<div style='margin-top: 2rem; margin-bottom: 2rem;'></div>", unsafe_allow_html=True)
             
-            with col1:
-                # PS Distribution (MAD Z-standardized)
-                if 'Point Spread' in df.columns:
-                    z_scores = df['mad_z_score'].dropna()
-                    
-                    # Create MAD-based trading zones visualization
-                    fig_zones = go.Figure()
-                    
-                    # Add histogram of Z-scores
-                    fig_zones.add_trace(go.Histogram(
-                        x=z_scores,
-                        nbinsx=30,
-                        name='MAD Z-Score Distribution',
-                        marker=dict(
-                            color='rgba(139, 92, 246, 0.6)',
-                            line=dict(color='rgba(139, 92, 246, 0.8)', width=1)
-                        ),
-                        opacity=0.7,
-                        hovertemplate='Z-Score: %{x:.2f}<br>Count: %{y}<extra></extra>'
-                    ))
-                    
-                    # Add trading zone lines with clear labels
-                    trading_zones = [
-                        (-3, '🛑 Stop Loss', '#ef4444'),
-                        (-2, '🟢 Strong Buy', '#10b981'),
-                        (-1, '📊 Weak Buy', '#3b82f6'),
-                        (0, '⚖️ Neutral/Exit', '#6b7280'),
-                        (1, '📊 Weak Sell', '#f59e0b'),
-                        (2, '🔴 Strong Sell', '#ef4444'),
-                        (3, '🛑 Stop Loss', '#ef4444')
-                    ]
-                    
-                    for value, label, color in trading_zones:
-                        fig_zones.add_vline(
-                            x=value,
-                            line=dict(color=color, width=2, dash='dash'),
-                            annotation=dict(
-                                text=f"{label}<br>Z={value}",
-                                textangle=0,
-                                font=dict(size=10, color=color, family='Inter', weight=600),
-                                yanchor='bottom'
-                            )
-                        )
-                    
-                    # Add shaded regions for trading zones
-                    fig_zones.add_vrect(
-                        x0=-4, x1=-2,
-                        fillcolor="rgba(16, 185, 129, 0.1)",
-                        layer="below",
-                        line_width=0,
-                        annotation_text="BUY ZONE",
-                        annotation_position="top left"
-                    )
-                    
-                    fig_zones.add_vrect(
-                        x0=-1, x1=1,
-                        fillcolor="rgba(107, 114, 128, 0.1)",
-                        layer="below",
-                        line_width=0,
-                        annotation_text="HOLD ZONE",
-                        annotation_position="top"
-                    )
-                    
-                    fig_zones.add_vrect(
-                        x0=2, x1=4,
-                        fillcolor="rgba(239, 68, 68, 0.1)",
-                        layer="below",
-                        line_width=0,
-                        annotation_text="SELL ZONE",
-                        annotation_position="top right"
-                    )
-                    
-                    fig_zones.update_layout(
-                        title=dict(
-                            text="📊 MAD Z-Score Trading Zones",
-                            x=0.5,
-                            font=dict(size=16, color='#8B5CF6', family='Inter', weight=700)
-                        ),
-                        xaxis_title="MAD Z-Score (σ-equivalent)",
-                        yaxis_title="Frequency",
-                        height=400,
-                        plot_bgcolor='white',
-                        paper_bgcolor='white',
-                        font=dict(color='#374151', family='Inter'),
-                        showlegend=True,
-                        xaxis=dict(
-                            range=[-4, 4],
-                            dtick=1,
-                            gridcolor='rgba(139, 92, 246, 0.1)'
-                        ),
-                        yaxis=dict(
-                            gridcolor='rgba(139, 92, 246, 0.1)'
+            # FULL-WIDTH: MAD Z-Score Trading Zones Chart
+            if 'Point Spread' in df.columns:
+                z_scores = df['mad_z_score'].dropna()
+                
+                # Create MAD-based trading zones visualization
+                fig_zones = go.Figure()
+                
+                # Add histogram of Z-scores
+                fig_zones.add_trace(go.Histogram(
+                    x=z_scores,
+                    nbinsx=30,
+                    name='MAD Z-Score Distribution',
+                    marker=dict(
+                        color='rgba(139, 92, 246, 0.6)',
+                        line=dict(color='rgba(139, 92, 246, 0.8)', width=1)
+                    ),
+                    opacity=0.7,
+                    hovertemplate='Z-Score: %{x:.2f}<br>Count: %{y}<extra></extra>'
+                ))
+                
+                # Add trading zone lines with clear labels
+                trading_zones = [
+                    (-3, '🛑 Stop Loss', '#ef4444'),
+                    (-2, '🟢 Strong Buy', '#10b981'),
+                    (-1, '📊 Weak Buy', '#3b82f6'),
+                    (0, '⚖️ Neutral/Exit', '#6b7280'),
+                    (1, '📊 Weak Sell', '#f59e0b'),
+                    (2, '🔴 Strong Sell', '#ef4444'),
+                    (3, '🛑 Stop Loss', '#ef4444')
+                ]
+                
+                for value, label, color in trading_zones:
+                    fig_zones.add_vline(
+                        x=value,
+                        line=dict(color=color, width=2, dash='dash'),
+                        annotation=dict(
+                            text=f"{label}<br>Z={value}",
+                            textangle=0,
+                            font=dict(size=10, color=color, family='Inter', weight=600),
+                            yanchor='bottom'
                         )
                     )
-                    
-                    st.plotly_chart(fig_zones, use_container_width=True)
-                    
-                    # Add MAD Trading Rules
-                    current_z = z_scores.iloc[-1] if len(z_scores) > 0 else 0
-                    
-                    # Determine current signal
-                    if current_z <= -2:
-                        signal = "🟢 STRONG BUY"
-                        action = "Open long position or add to existing"
-                        exit_target = "Exit when Z-score returns to 0 (median)"
-                    elif current_z >= 2:
-                        signal = "🔴 STRONG SELL"
-                        action = "Open short position or reduce long"
-                        exit_target = "Exit when Z-score returns to 0 (median)"
-                    elif -1 <= current_z <= 1:
-                        signal = "⚖️ NEUTRAL"
-                        action = "Hold or close existing positions"
-                        exit_target = "Wait for |Z| > 2 for new entry"
-                    else:
-                        signal = "📊 WEAK SIGNAL"
-                        action = "Monitor closely, prepare for entry"
-                        exit_target = "Wait for stronger signal"
-                    
-                    st.markdown(f"""
-                        <div style="
-                            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(147, 51, 234, 0.05));
-                            border: 2px solid rgba(139, 92, 246, 0.3);
-                            border-radius: 12px;
-                            padding: 1.5rem;
-                            margin: 1rem 0;
-                        ">
-                            <h4 style="color: #8B5CF6; margin: 0 0 1rem 0;">📈 MAD Trading Signal</h4>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div>
-                                    <p style="color: #6B7280; font-size: 0.875rem; margin: 0;">Current Z-Score</p>
-                                    <p style="color: #8B5CF6; font-size: 1.5rem; font-weight: 700; margin: 0;">{current_z:.2f}</p>
-                        </div>
-                                <div>
-                                    <p style="color: #6B7280; font-size: 0.875rem; margin: 0;">Signal</p>
-                                    <p style="font-size: 1.2rem; font-weight: 700; margin: 0;">{signal}</p>
-                                </div>
+                
+                # Add shaded regions for trading zones
+                fig_zones.add_vrect(
+                    x0=-4, x1=-2,
+                    fillcolor="rgba(16, 185, 129, 0.1)",
+                    layer="below",
+                    line_width=0,
+                    annotation_text="BUY ZONE",
+                    annotation_position="top left"
+                )
+                
+                fig_zones.add_vrect(
+                    x0=-1, x1=1,
+                    fillcolor="rgba(107, 114, 128, 0.1)",
+                    layer="below",
+                    line_width=0,
+                    annotation_text="HOLD ZONE",
+                    annotation_position="top"
+                )
+                
+                fig_zones.add_vrect(
+                    x0=2, x1=4,
+                    fillcolor="rgba(239, 68, 68, 0.1)",
+                    layer="below",
+                    line_width=0,
+                    annotation_text="SELL ZONE",
+                    annotation_position="top right"
+                )
+                
+                fig_zones.update_layout(
+                    title=dict(
+                        text="📊 MAD Z-Score Trading Zones",
+                        x=0.5,
+                        font=dict(size=20, color='#1e293b', family='Urbanist', weight=700)
+                    ),
+                    xaxis_title="MAD Z-Score (σ-equivalent)",
+                    yaxis_title="Frequency",
+                    height=550,
+                    plot_bgcolor='rgba(248, 250, 252, 0.5)',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    font=dict(color='#1e293b', family='Urbanist', size=13),
+                    showlegend=True,
+                    legend=dict(
+                        orientation='h',
+                        yanchor='bottom',
+                        y=1.02,
+                        xanchor='center',
+                        x=0.5,
+                        bgcolor='rgba(255, 255, 255, 0.9)',
+                        bordercolor='rgba(0, 82, 204, 0.2)',
+                        borderwidth=1
+                    ),
+                    xaxis=dict(
+                        range=[-4, 4],
+                        dtick=1,
+                        gridcolor='rgba(0, 82, 204, 0.08)',
+                        title_font=dict(size=14, color='#64748b')
+                    ),
+                    yaxis=dict(
+                        gridcolor='rgba(139, 92, 246, 0.1)'
+                    )
+                )
+                
+                st.plotly_chart(fig_zones, use_container_width=True)
+                
+                # Add MAD Trading Rules
+                current_z = z_scores.iloc[-1] if len(z_scores) > 0 else 0
+                
+                # Determine current signal
+                if current_z <= -2:
+                    signal = "🟢 STRONG BUY"
+                    action = "Open long position or add to existing"
+                    exit_target = "Exit when Z-score returns to 0 (median)"
+                elif current_z >= 2:
+                    signal = "🔴 STRONG SELL"
+                    action = "Open short position or reduce long"
+                    exit_target = "Exit when Z-score returns to 0 (median)"
+                elif -1 <= current_z <= 1:
+                    signal = "⚖️ NEUTRAL"
+                    action = "Hold or close existing positions"
+                    exit_target = "Wait for |Z| > 2 for new entry"
+                else:
+                    signal = "📊 WEAK SIGNAL"
+                    action = "Monitor closely, prepare for entry"
+                    exit_target = "Wait for stronger signal"
+                
+                st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(147, 51, 234, 0.05));
+                        border: 2px solid rgba(139, 92, 246, 0.3);
+                        border-radius: 12px;
+                        padding: 1.5rem;
+                        margin: 1rem 0;
+                    ">
+                        <h4 style="color: #8B5CF6; margin: 0 0 1rem 0;">📈 MAD Trading Signal</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <p style="color: #6B7280; font-size: 0.875rem; margin: 0;">Current Z-Score</p>
+                                <p style="color: #8B5CF6; font-size: 1.5rem; font-weight: 700; margin: 0;">{current_z:.2f}</p>
                             </div>
-                            <hr style="border: 1px solid rgba(139, 92, 246, 0.2); margin: 1rem 0;">
-                            <p style="color: #374151; margin: 0.5rem 0;"><strong>Action:</strong> {action}</p>
-                            <p style="color: #374151; margin: 0.5rem 0;"><strong>Exit:</strong> {exit_target}</p>
+                            <div>
+                                <p style="color: #6B7280; font-size: 0.875rem; margin: 0;">Signal</p>
+                                <p style="font-size: 1.2rem; font-weight: 700; margin: 0;">{signal}</p>
+                            </div>
                         </div>
-                    """, unsafe_allow_html=True)
+                        <hr style="border: 1px solid rgba(139, 92, 246, 0.2); margin: 1rem 0;">
+                        <p style="color: #374151; margin: 0.5rem 0;"><strong>Action:</strong> {action}</p>
+                        <p style="color: #374151; margin: 0.5rem 0;"><strong>Exit:</strong> {exit_target}</p>
+                    </div>
+                """, unsafe_allow_html=True)
         
         with analysis_tab5:
             st.subheader("🔗 Correlation & Beta Analysis")
