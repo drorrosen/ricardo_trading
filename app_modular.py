@@ -24,12 +24,29 @@ from io import BytesIO
 from scipy import stats
 from typing import Tuple
 
-# Enhanced data loader with CoinGecko API support
+# Enhanced data loader with Binance Futures API + CoinGecko fallback
 class EnhancedDataLoader:
-    """Enhanced data loader that supports Excel files AND CoinGecko API as fallback"""
+    """Enhanced data loader that supports Binance Futures API, Excel files, AND CoinGecko as fallback"""
     
     def __init__(self):
         self.data_cache = {}
+        
+        # Binance Futures symbol mapping
+        self.binance_symbols = {
+            'BTC': 'BTCUSDT',
+            'ETH': 'ETHUSDT',
+            'BNB': 'BNBUSDT',
+            'ADA': 'ADAUSDT',
+            'ALGO': 'ALGOUSDT',
+            'APE': 'APEUSDT',
+            'APT': 'APTUSDT',
+            'ARB': 'ARBUSDT',
+            'ATOM': 'ATOMUSDT',
+            'AVAX': 'AVAXUSDT',
+            'BCH': 'BCHUSDT'
+        }
+        
+        # CoinGecko IDs (fallback)
         self.coingecko_ids = {
             'BTC': 'bitcoin',
             'ETH': 'ethereum', 
@@ -44,8 +61,8 @@ class EnhancedDataLoader:
             'BCH': 'bitcoin-cash'
         }
     
-    def load_real_data(self, strong_asset: str, weak_asset: str, days: int = 180):
-        """Load REAL data - defaults to 180 days (6 months) to stay within CoinGecko free tier limits"""
+    def load_real_data(self, strong_asset: str, weak_asset: str, days: int = 180, data_source: str = 'binance'):
+        """Load REAL data - Primary: Binance Futures, Fallback: CoinGecko, Excel"""
         
         # Validate that we have these assets
         if strong_asset not in AVAILABLE_ASSETS:
@@ -54,17 +71,28 @@ class EnhancedDataLoader:
         if weak_asset not in AVAILABLE_ASSETS:
             raise ValueError(f"❌ Weak asset '{weak_asset}' is not in our available assets: {AVAILABLE_ASSETS}")
         
-        # Ensure we don't exceed CoinGecko free tier limit (365 days)
+        # Ensure we don't exceed API limits
         if days > 365:
-            print(f"⚠️ Requested {days} days exceeds CoinGecko free limit. Using 365 days instead.")
+            print(f"⚠️ Requested {days} days exceeds free tier limit. Using 365 days instead.")
             days = 365
         
-        # First, try CoinGecko API for all pairs (more reliable)
-        print(f"🌐 Loading data from CoinGecko API for {strong_asset}/{weak_asset} ({days} days)")
-        try:
-            return self.load_from_coingecko(strong_asset, weak_asset, days=days)
-        except Exception as coingecko_error:
-            print(f"❌ CoinGecko failed: {str(coingecko_error)}")
+        # Try Binance Futures FIRST (primary for client)
+        if data_source == 'binance':
+            print(f"🔷 Loading data from Binance Futures API for {strong_asset}/{weak_asset} ({days} days)")
+            try:
+                return self.load_from_binance(strong_asset, weak_asset, days=days)
+            except Exception as binance_error:
+                print(f"❌ Binance Futures failed: {str(binance_error)}")
+                print(f"🔄 Falling back to CoinGecko...")
+                data_source = 'coingecko'  # Auto fallback
+        
+        # Try CoinGecko as fallback
+        if data_source == 'coingecko':
+            print(f"🌐 Loading data from CoinGecko API for {strong_asset}/{weak_asset} ({days} days)")
+            try:
+                return self.load_from_coingecko(strong_asset, weak_asset, days=days)
+            except Exception as coingecko_error:
+                print(f"❌ CoinGecko failed: {str(coingecko_error)}")
             
             # Only try Excel as fallback for ETH/BCH
             if strong_asset == 'ETH' and weak_asset == 'BCH':
@@ -150,8 +178,121 @@ class EnhancedDataLoader:
                 except Exception as excel_error:
                     print(f"❌ Error loading Excel file: {str(excel_error)}")
             
-            # If both failed, raise the original CoinGecko error
-            raise coingecko_error
+            # If all failed, raise error
+            raise ValueError(f"Could not load data from any source (Binance/CoinGecko/Excel)")
+    
+    def load_from_binance(self, strong_asset: str, weak_asset: str, days: int = 180):
+        """Load data from Binance Futures API (NO authentication required for public data)"""
+        try:
+            import requests
+            import time
+            from datetime import datetime, timedelta
+            
+            print(f"🔷 Fetching Binance Futures data for {strong_asset} and {weak_asset}")
+            
+            # Get Binance symbols
+            strong_symbol = self.binance_symbols.get(strong_asset)
+            weak_symbol = self.binance_symbols.get(weak_asset)
+            
+            if not strong_symbol or not weak_symbol:
+                raise ValueError(f"❌ Binance mapping not available for {strong_asset} or {weak_asset}")
+            
+            # Binance Futures public API endpoint (NO auth needed for klines)
+            base_url = "https://fapi.binance.com/fapi/v1/klines"
+            
+            # Calculate time range (Binance uses milliseconds)
+            end_time = int(time.time() * 1000)
+            start_time = int((time.time() - (days * 24 * 60 * 60)) * 1000)
+            
+            # Determine interval based on days requested
+            if days <= 30:
+                interval = '1h'  # Hourly for short periods
+                limit = 1000  # Max per request
+            elif days <= 90:
+                interval = '4h'  # 4-hour for medium periods
+                limit = 1000
+            else:
+                interval = '1d'  # Daily for long periods
+                limit = 1000
+            
+            def fetch_binance_klines(symbol, asset_name):
+                """Fetch klines (candlestick) data from Binance Futures"""
+                params = {
+                    'symbol': symbol,
+                    'interval': interval,
+                    'startTime': start_time,
+                    'endTime': end_time,
+                    'limit': limit
+                }
+                
+                print(f"  📊 Fetching {asset_name} data from Binance Futures...")
+                response = requests.get(base_url, params=params, timeout=30)
+                
+                if response.status_code == 200:
+                    klines = response.json()
+                    
+                    # Parse klines data
+                    # Format: [open_time, open, high, low, close, volume, close_time, ...]
+                    df = pd.DataFrame(klines, columns=[
+                        'open_time', 'open', 'high', 'low', 'close', 'volume',
+                        'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                        'taker_buy_quote', 'ignore'
+                    ])
+                    
+                    # Convert timestamp to datetime
+                    df['timestamp'] = pd.to_datetime(df['open_time'], unit='ms')
+                    
+                    # Convert price to float and keep only close price
+                    df[f'{asset_name}_price'] = df['close'].astype(float)
+                    
+                    # Return only timestamp and price
+                    return df[['timestamp', f'{asset_name}_price']]
+                else:
+                    raise Exception(f"Binance API error {response.status_code}: {response.text}")
+            
+            # Fetch data for both assets
+            strong_data = fetch_binance_klines(strong_symbol, strong_asset)
+            time.sleep(0.5)  # Be nice to the API (Binance is more lenient than CoinGecko)
+            weak_data = fetch_binance_klines(weak_symbol, weak_asset)
+            
+            # Merge the datasets
+            df = pd.merge(strong_data, weak_data, on='timestamp', how='inner')
+            df = df.rename(columns={
+                'timestamp': 'ISO Date',
+                f'{strong_asset}_price': f'{strong_asset} Close',
+                f'{weak_asset}_price': f'{weak_asset} Close'
+            })
+            
+            # Calculate returns
+            df[f'LN {strong_asset} Var %'] = df[f'{strong_asset} Close'].pct_change() * 100
+            df[f'LN {weak_asset} Var %'] = df[f'{weak_asset} Close'].pct_change() * 100
+            
+            # Calculate spreads
+            df['log_spread'] = np.log(df[f'{strong_asset} Close']) - np.log(df[f'{weak_asset} Close'])
+            df['Point Spread'] = df[f'LN {weak_asset} Var %'] - df[f'LN {strong_asset} Var %']
+            df['Accum Spread'] = df['Point Spread'].cumsum()
+            
+            # Calculate MAD Z-score
+            median_spread = df['log_spread'].median()
+            mad = np.median(np.abs(df['log_spread'] - median_spread))
+            df['mad_z_score'] = (df['log_spread'] - median_spread) / (mad * 1.4826)
+            
+            # Calculate percentiles
+            df['PS_pct'] = df['Point Spread'].rank(pct=True)
+            df['AS_pct'] = df['Accum Spread'].rank(pct=True)
+            
+            # Remove NaN rows
+            df = df.dropna()
+            
+            print(f"✅ Successfully loaded {len(df)} data points from Binance Futures!")
+            print(f"📅 Date range: {df['ISO Date'].min()} to {df['ISO Date'].max()}")
+            print(f"📊 Interval: {interval}, Data points: {len(df)}")
+            
+            return df
+            
+        except Exception as e:
+            print(f"❌ Binance Futures API error: {str(e)}")
+            raise ValueError(f"Could not load data from Binance Futures: {str(e)}")
     
     def load_from_coingecko(self, strong_asset: str, weak_asset: str, days: int = 365):
         """Load data from CoinGecko API as fallback"""
@@ -1209,6 +1350,24 @@ def render_sidebar_navigation():
             st.session_state.current_page = "Trade Analysis"
             st.rerun()
         
+        # Data Source Selector
+        st.markdown("---")
+        st.markdown('<div class="nav-section-title">DATA SOURCE</div>', unsafe_allow_html=True)
+        
+        data_source = st.radio(
+            "Select Data Provider",
+            options=['binance', 'coingecko'],
+            format_func=lambda x: '🔷 Binance Futures (Recommended)' if x == 'binance' else '🌐 CoinGecko (Fallback)',
+            index=0,
+            key='data_source_selector',
+            help="Binance Futures: More data, better for trading. CoinGecko: Fallback if Binance fails."
+        )
+        
+        # Store in session state
+        if 'data_source' not in st.session_state:
+            st.session_state.data_source = 'binance'
+        st.session_state.data_source = data_source
+        
         # Dashboard Info
         st.markdown(f"""
             <div class="dashboard-info">
@@ -1217,17 +1376,21 @@ def render_sidebar_navigation():
                     <span class="dashboard-info-value">{st.session_state.current_page}</span>
                 </div>
                 <div class="dashboard-info-item">
-                    <strong>Available Coins:</strong><br/>
-                    <span class="dashboard-info-value">{len(AVAILABLE_ASSETS)}</span>
+                    <strong>Data Source:</strong><br/>
+                    <span class="dashboard-info-value">{'Binance 🔷' if data_source == 'binance' else 'CoinGecko 🌐'}</span>
                 </div>
                 <div class="dashboard-info-item">
-                    <strong>API Limit:</strong><br/>
-                    <span class="dashboard-info-value">Max 365 days</span>
+                    <strong>Available Coins:</strong><br/>
+                    <span class="dashboard-info-value">{len(AVAILABLE_ASSETS)}</span>
                 </div>
             </div>
         """, unsafe_allow_html=True)
         
-        st.warning("ℹ️ CoinGecko free tier: Max 365 days of data per request")
+        # API info based on source
+        if data_source == 'binance':
+            st.info("🔷 **Binance Futures**: Public API, no auth needed, up to 1000 candles per request")
+        else:
+            st.warning("ℹ️ **CoinGecko**: Free tier, max 365 days of data per request")
     
     # Return settings from session state
     return st.session_state.sidebar_settings
@@ -1688,12 +1851,14 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
         status_text = st.empty()
         
         try:
-            # Step 1: Load data from CoinGecko (primary source)
-            status_text.text(f"🌐 Loading real-time data from CoinGecko API for {strong_asset}/{weak_asset}...")
+            # Step 1: Load data from selected source
+            selected_source = st.session_state.get('data_source', 'binance')
+            source_name = "Binance Futures 🔷" if selected_source == 'binance' else "CoinGecko 🌐"
+            status_text.text(f"📊 Loading data from {source_name} for {strong_asset}/{weak_asset}...")
             progress_bar.progress(25)
             
-            # Use REAL data loader with CoinGecko fallback!
-            df = data_loader.load_real_data(strong_asset, weak_asset, days=data_points_override)
+            # Use REAL data loader with selected data source!
+            df = data_loader.load_real_data(strong_asset, weak_asset, days=data_points_override, data_source=selected_source)
             
             if df is not None:
                 # Step 2: Calculate statistics
@@ -1729,10 +1894,9 @@ def render_trade_analysis_page(data_provider, sidebar_settings):
                 data_start = df['ISO Date'].min().strftime('%Y-%m-%d')
                 data_end = df['ISO Date'].max().strftime('%Y-%m-%d') 
                 data_count = len(df)
-                # Determine data source for display (CoinGecko is primary now)
-                data_source = "CoinGecko API"
+                # Show which data source was actually used
                 st.success(
-                    f"Successfully analyzed {strong_asset}/{weak_asset} pair using data from {data_source}. "
+                    f"✅ Successfully analyzed {strong_asset}/{weak_asset} pair using {source_name}! "
                     f"Period: {data_start} to {data_end} ({data_count:,} data points)"
                 )
             else:
